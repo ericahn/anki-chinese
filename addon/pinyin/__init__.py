@@ -9,7 +9,7 @@ from aqt.utils import showInfo
 # import all of the Qt GUI library
 from aqt.qt import *
 
-import dragonmapper.hanzi
+import dragonmapper.transcriptions
 import jieba
 jieba.setLogLevel(60)
 
@@ -29,7 +29,12 @@ def parse_sentence(sentence):
     ruby_struct = []
     for text in jieba.cut(sentence):
         if is_hanzi(text[0]):
-            to_append = (True, text, dragonmapper.hanzi.to_pinyin(text))
+            success, pinyins = cedict.lookup(text)
+            if success:
+                pinyin = list(pinyins.keys())[0]
+            else:
+                pinyin = [list(cedict.lookup(c)[1])[0] for c in text]
+            to_append = (True, text, pinyin)
         else:
             to_append = (False, text, None)
         ruby_struct.append(to_append)

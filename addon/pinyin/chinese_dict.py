@@ -8,13 +8,14 @@ class ChineseDict:
     def __init__(self, lines):
         rex_entry = re.compile(r"^(\S+)\s+(\S+)\s+\[(.+)\]\s+\/(.+)/")
         matches = [rex_entry.match(line) for line in lines if not line.startswith('#')]
-        self.entries = defaultdict(list)
+        self.entries = defaultdict(lambda: defaultdict(list))
         for match in matches:
             word = match.group(2)
             pinyin = tuple(match.group(3).split(' '))
             definitions = match.group(4).split('/')
-            self.entries[word, pinyin].append(definitions)
-            self.entries[word].append(definitions)
+            self.entries[word][pinyin].append(definitions)
+        for word in self.entries:
+            self.entries[word] = dict(self.entries[word])
         self.entries = dict(self.entries)
         self.max_word_length = max(map(len, self.entries))
 

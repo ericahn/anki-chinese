@@ -1,10 +1,16 @@
+from dragonmapper.transcriptions import numbered_syllable_to_accented
+
+def numbered_syllables_to_accented(syllables, joiner=''):
+    return joiner.join(map(numbered_syllable_to_accented, syllabes))
+
 def generate_ruby(ruby_struct):
     html = ''
     prev = False
     for is_ruby, main, pinyins in ruby_struct:
         if is_ruby:
             to_add  = ' ' if prev else ''
-            to_add += '<ruby>{}<rt>{}</ruby>'.format(main, ''.join(pinyins))
+            accented = map(numbered_syllable_to_accented, pinyins)
+            to_add += '<ruby>{}<rt>{}</ruby>'.format(main, ' '.join(accented))
         else:
             to_add = main
         prev = is_ruby
@@ -14,7 +20,12 @@ def generate_ruby(ruby_struct):
 def generate_definitions_table(cedict, ruby_struct):
     html = '<table>\n{}</table>'
     inner = ''
-    inner_temp = '<tr{}><td class="dict-word">{}</td><td class="dict-definition">{}</td></tr>'.format
+
+    row_classes = 'dict-word', 'dict-pinyin', 'dict-definition'
+    row_temp  = '<tr{}>'
+    row_temp += ''.join('<td class="{}">{{}}</td>'.format(s) for s in row_classes
+    row_temp += '</tr>'
+    
     rows = []
     first_word = True
     for chinese, text, pinyins in ruby_struct:
@@ -24,7 +35,9 @@ def generate_definitions_table(cedict, ruby_struct):
         success, definitions = cedict.lookup(text, pinyins)
         first = True
         if success:
-            for definition in definitions:
+            first_pinyin = True
+            for pinyin, definition in definitions:
+                pinyin = pinyin if first_pinyin else ''
                 for element in definition:
                     word = text if first else ''
                     if first and not first_word:
