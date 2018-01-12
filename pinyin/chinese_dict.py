@@ -21,11 +21,13 @@ class ChineseDict:
         self.max_word_length = max(map(len, self.entries))
 
     def lookup(self, chinese, pinyin=None):
-        if pinyin and (chinese, pinyin) in self.entries:
-            return True, self.entries[(chinese, pinyin)]
-        elif chinese in self.entries:
+        if chinese not in self.entries:
+            return False
+        entry = self.entries[chinese]
+        if pinyin and pinyin in entry:
+            return True, entry[pinyin]
+        else:
             return True, self.entries[chinese]
-        return False, None
 
     def gen_words(self, text):
         i = 0

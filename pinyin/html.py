@@ -1,7 +1,9 @@
-from dragonmapper.transcriptions import numbered_syllable_to_accented
+from dragonmapper.transcriptions import numbered_syllable_to_accented as number_to_accent
 
-def numbered_syllables_to_accented(syllables, joiner=''):
-    return joiner.join(map(numbered_syllable_to_accented, syllabes))
+
+def numbers_to_accent(syllables, joiner=''):
+    return joiner.join(map(number_to_accent, syllables))
+
 
 def generate_ruby(ruby_struct):
     html = ''
@@ -9,46 +11,39 @@ def generate_ruby(ruby_struct):
     for is_ruby, main, pinyins in ruby_struct:
         if is_ruby:
             to_add  = ' ' if prev else ''
-            accented = map(numbered_syllable_to_accented, pinyins)
-            to_add += '<ruby>{}<rt>{}</ruby>'.format(main, ' '.join(accented))
+            to_add += '<ruby>{}<rt>{}</ruby>'.format(main, numbers_to_accent(pinyins, ' '))
         else:
             to_add = main
         prev = is_ruby
         html += to_add
     return html
 
+
 def generate_definitions_table(cedict, ruby_struct):
     html = '<table>\n{}</table>'
     inner = ''
 
-    row_classes = 'dict-word', 'dict-pinyin', 'dict-definition'
     row_temp  = '<tr{}>'
-    row_temp += ''.join('<td class="{}">{{}}</td>'.format(s) for s in row_classes)
+    row_temp += ''.join('<td>{}</td>' for _ in range(3))
     row_temp += '</tr>'
-    
-    rows = []
+
     first_word = True
     for chinese, text, pinyins in ruby_struct:
         if not chinese:
             continue
         print(pinyins)
         success, definitions = cedict.lookup(text, pinyins)
-        first = True
         if success:
             first_pinyin = True
-            for pinyin, definition in definitions:
-                pinyin = pinyin if first_pinyin else ''
-                for element in definition:
-                    word = text if first else ''
-                    if first and not first_word:
-                        top_border = ' class="dict-word-border"'
-                    else:
-                        top_border = ''
-                    inner += inner_temp(top_border, word, element)
-                    first = False
+            for elements in definitions:
+                for element in elements:
+                    word = text if first_word else ''
+                    pinyin = ''.join(pinyins) if first_pinyin else ''
+                    inner += row_temp.format(None, word, pinyin, element)
+                    first_word = False
+                    first_pinyin = False
         else:
             words = cedict.gen_words(text)
-            
 
     return html.format(inner)
 
