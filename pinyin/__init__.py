@@ -99,7 +99,8 @@ def menu_main():
     status, res = main(col, mw)
     showInfo('Success: {}\n{}'.format(status, res))
 
-if __name__ == '__main__':
+# Detect if we are in Anki
+if mw:
     # create a new menu item
     action = QAction("Generate ruby", mw)
     # set it to call testFunction when it's clicked
