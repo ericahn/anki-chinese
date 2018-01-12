@@ -3,6 +3,7 @@ import unicodedata
 
 from collections import defaultdict
 
+
 class ChineseDict:
 
     def __init__(self, lines):
