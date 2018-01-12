@@ -13,8 +13,9 @@ import dragonmapper.transcriptions
 import jieba
 jieba.setLogLevel(60)
 
-from addon.chinese_dict import ChineseDict
-from addon.html import *
+
+from pinyin.chinese_dict import ChineseDict
+from pinyin.html import *
 
 
 cedict_path = os.path.join(os.path.dirname(__file__), 'user_files', 'cedict_ts.u8')
