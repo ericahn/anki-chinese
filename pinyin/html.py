@@ -13,7 +13,10 @@ def generate_ruby(ruby_struct):
             to_add  = ' ' if prev else ''
             to_add += '<ruby>{}<rt>{}</ruby>'.format(main, numbers_to_accent(pinyins, ' '))
         else:
-            to_add = main
+            if main == ' ':
+                to_add = '<br />'
+            else:
+                to_add = main
         prev = is_ruby
         html += to_add
     return html
@@ -47,7 +50,7 @@ def generate_definitions_table(cedict, ruby_struct):
         if not chinese:
             continue
         success, entry_dict = cedict.lookup(text, pinyins)
-        if success and not text in already:
+        if success and text not in already:
             already.add(text)
             for elements in entry_dict[pinyins]:
                 if 'variant of' in elements[0]:

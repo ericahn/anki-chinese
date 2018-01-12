@@ -32,18 +32,20 @@ def parse_sentence(sentence):
         if is_hanzi(text[0]):
             success, pinyins = cedict.lookup(text)
             if success:
-                pinyin = list(pinyins.keys())[0]
+                pinyin = sort_entry(pinyins)[0][0]
+                ruby_struct.append((True, text, pinyin))
             else:
-                pinyin = tuple(list(cedict.lookup(c)[1])[0][0] for c in text)
-            to_append = (True, text, pinyin)
+                for word in cedict.gen_words(text):
+                    ruby_struct.append((True, word, sort_entry(cedict.lookup(word)[1])[0][0]))
+        elif text[0] == '?' and len(ruby_struct) > 0 and ruby_struct[-1][1] == '吗':
+            ruby_struct[-1] = (True, '吗', ('ma5',))
         else:
-            to_append = (False, text, None)
-        ruby_struct.append(to_append)
+            ruby_struct.append((False, text, None))
                 
     return ruby_struct
 
 
-def main(col, mw=None):
+def main(col, mw=None, config=None):
     if mw:
         config = mw.addonManager.getConfig(__name__)
     
