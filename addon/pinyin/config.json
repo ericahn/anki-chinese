@@ -1,0 +1,6 @@
+{
+  "deck":         "Mandarin::The Incredibles",
+  "source_field": "foreign_curr",
+  "dest_field":   "foreign_curr_ruby",
+  "dict_field":   "cedict_notes"
+}
