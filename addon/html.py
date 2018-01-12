@@ -23,7 +23,7 @@ def generate_definitions_table(cedict, ruby_struct):
 
     row_classes = 'dict-word', 'dict-pinyin', 'dict-definition'
     row_temp  = '<tr{}>'
-    row_temp += ''.join('<td class="{}">{{}}</td>'.format(s) for s in row_classes
+    row_temp += ''.join('<td class="{}">{{}}</td>'.format(s) for s in row_classes)
     row_temp += '</tr>'
     
     rows = []
