@@ -34,7 +34,7 @@ def parse_sentence(sentence):
             if success:
                 pinyin = list(pinyins.keys())[0]
             else:
-                pinyin = [list(cedict.lookup(c)[1])[0] for c in text]
+                pinyin = tuple(list(cedict.lookup(c)[1])[0][0] for c in text)
             to_append = (True, text, pinyin)
         else:
             to_append = (False, text, None)

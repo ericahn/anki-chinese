@@ -19,31 +19,78 @@ def generate_ruby(ruby_struct):
     return html
 
 
+def sort_entry(entry_dict):
+    entry = list(entry_dict.items())
+
+    def key(pair):
+        pinyins, definitions = pair
+        lower = sum(pinyin == pinyin.lower() for pinyin in pinyins)
+        size = len(definitions)
+        return lower, size
+
+    return sorted(entry, key=key, reverse=True)
+
+
 def generate_definitions_table(cedict, ruby_struct):
     html = '<table>\n{}</table>'
     inner = ''
 
-    row_temp  = '<tr{}>'
-    row_temp += ''.join('<td>{}</td>' for _ in range(3))
-    row_temp += '</tr>'
+    col_classes = 'dict-table-word', 'dict-table-pinyin', 'dict-table-definition'
+    row_temp  = '  <tr class="{}">\n'
+    row_temp += '\n'.join('    <td class={}>{{}}</td>'.format(row_class) for row_class in col_classes) + '\n'
+    row_temp += '  </tr>\n'
 
-    first_word = True
+    first = True
+    already = set()
     for chinese, text, pinyins in ruby_struct:
+        first_word = True
         if not chinese:
             continue
-        print(pinyins)
-        success, definitions = cedict.lookup(text, pinyins)
-        if success:
-            first_pinyin = True
-            for elements in definitions:
-                for element in elements:
-                    word = text if first_word else ''
-                    pinyin = ''.join(pinyins) if first_pinyin else ''
-                    inner += row_temp.format(None, word, pinyin, element)
-                    first_word = False
-                    first_pinyin = False
+        success, entry_dict = cedict.lookup(text, pinyins)
+        if success and not text in already:
+            already.add(text)
+            for elements in entry_dict[pinyins]:
+                if 'variant of' in elements[0]:
+                    continue
+                ol = '\n      <ol>\n'
+                ol += ''.join('        <li>{}</li>\n'.format(element) for element in elements)
+                ol += '      </ol>'
+                word = text if first_word else ''
+                pinyin = numbers_to_accent(pinyins)
+                row_class = ''
+                if not first and first_word:
+                    row_class += 'dict-table-word-border'
+                inner += row_temp.format(row_class, word, pinyin, ol)
+                first_word = False
+                first = False
         else:
             words = cedict.gen_words(text)
+            for word in words:
+                if word in already:
+                    continue
+                already.add(word)
+                first_word = True
+                success, entry_dict = cedict.lookup(word)
+                for pinyin, definitions in sort_entry(entry_dict):
+                    first_pinyin = True
+                    for elements in definitions:
+                        if 'variant of' in elements[0]:
+                            continue
+                        ol = '\n      <ol>\n'
+                        ol += ''.join('        <li>{}</li>\n'.format(element) for element in elements)
+                        ol += '      </ol>'
+                        word = word if first_word else ''
+                        pinyin = numbers_to_accent(pinyin)
+                        row_class = []
+                        if not first:
+                            if first_word:
+                                row_class.append('dict-table-word-border')
+                            elif first_pinyin:
+                                row_class.append('dict-table-pinyin-border')
+                        inner += row_temp.format(' '.join(row_class), word, pinyin, ol)
+                        first_word = False
+                        first_pinyin = False
+                        first = False
 
     return html.format(inner)
 

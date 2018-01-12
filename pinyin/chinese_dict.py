@@ -22,12 +22,12 @@ class ChineseDict:
 
     def lookup(self, chinese, pinyin=None):
         if chinese not in self.entries:
-            return False
+            return False, None
         entry = self.entries[chinese]
         if pinyin and pinyin in entry:
-            return True, entry[pinyin]
+            return True, {pinyin: entry[pinyin]}
         else:
-            return True, self.entries[chinese]
+            return True, entry
 
     def gen_words(self, text):
         i = 0
