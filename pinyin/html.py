@@ -27,9 +27,15 @@ def sort_entry(entry_dict):
 
     def key(pair):
         pinyins, definitions = pair
+        definition_text = ' '.join(map(' '.join, definitions))
+        
         lower = sum(pinyin == pinyin.lower() for pinyin in pinyins)
-        size = len(definitions)
-        return lower, size
+        size = sum(map(len, definitions))
+        
+        grammar_words = 'modal', 'particle', 'clause', 'marker'
+        grammar = sum(grammar_word in definition_text for grammar_word in grammar_words)
+        
+        return lower, grammar, size
 
     return sorted(entry, key=key, reverse=True)
 
