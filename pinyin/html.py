@@ -32,7 +32,7 @@ def sort_entry(entry_dict):
         lower = sum(pinyin == pinyin.lower() for pinyin in pinyins)
         size = sum(map(len, definitions))
         
-        grammar_words = 'modal', 'particle', 'clause', 'marker'
+        grammar_words = 'modal', 'particle', 'clause', 'marker', 'prefix for'
         grammar = sum(grammar_word in definition_text for grammar_word in grammar_words)
         
         return lower, grammar, size
