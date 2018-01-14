@@ -5,4 +5,6 @@ addon/__pycache__/
 # PyCharm / Jupyter rubbish
 .idea/
 .ipynb_checkpoints/
-workbook.ipynb
+
+# Mac rubbish
+.DS_Store
