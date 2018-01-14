@@ -1,6 +1,7 @@
 # Byte-compiled / optimized / DLL files
 addon/__pycache__/
 *.py[cod]
+*.egg-info/
 
 # PyCharm / Jupyter rubbish
 .idea/
