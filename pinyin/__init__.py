@@ -9,7 +9,6 @@ from aqt.utils import showInfo
 # import all of the Qt GUI library
 from aqt.qt import *
 
-import dragonmapper.transcriptions
 import jieba
 jieba.setLogLevel(60)
 

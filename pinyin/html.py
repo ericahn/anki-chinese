@@ -1,8 +1,5 @@
-from dragonmapper.transcriptions import numbered_syllable_to_accented as number_to_accent
-
-
 def numbers_to_accent(syllables, joiner=''):
-    return joiner.join(map(number_to_accent, syllables))
+    return joiner.join(map(decode_pinyin, syllables))
 
 
 def generate_ruby(ruby_struct):
