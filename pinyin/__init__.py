@@ -2,22 +2,28 @@ import os
 import codecs
 import re
 
-# import the main window object (mw) from aqt
-from aqt import mw
-# import the "show info" tool from utils.py
-from aqt.utils import showInfo
-# import all of the Qt GUI library
-from aqt.qt import *
+try:
+    # import the main window object (mw) from aqt
+    from aqt import mw
+    # import the "show info" tool from utils.py
+    from aqt.utils import showInfo
+    # import all of the Qt GUI library
+    from aqt.qt import *
+except ImportError:
+    print('No Anki modules!')
 
 import jieba
 jieba.setLogLevel(60)
 
-
 from pinyin.chinese_dict import ChineseDict
 from pinyin.html import *
 
+module_path = os.path.join(os.path.dirname(__file__), 'user_files')
 
-cedict_path = os.path.join(os.path.dirname(__file__), 'user_files', 'cedict_ts.u8')
+jieba_path = os.path.join(module_path, 'jieba_extra.u8')
+jieba.load_userdict(jieba_path)
+
+cedict_path = os.path.join(module_path, 'cedict_ts.u8')
 cedict = ChineseDict(codecs.open(cedict_path, 'r', 'utf-8'))
 
 
@@ -101,10 +107,13 @@ def menu_main():
     showInfo('Success: {}\n{}'.format(status, res))
 
 # Detect if we are in Anki
-if mw:
-    # create a new menu item
-    action = QAction("Generate ruby", mw)
-    # set it to call testFunction when it's clicked
-    action.triggered.connect(menu_main)
-    # and add it to the tools menu
-    mw.form.menuTools.addAction(action)
+try:
+    if mw:
+        # create a new menu item
+        action = QAction("Generate ruby", mw)
+        # set it to call testFunction when it's clicked
+        action.triggered.connect(menu_main)
+        # and add it to the tools menu
+        mw.form.menuTools.addAction(action)
+except:
+    print('No addon magic')
