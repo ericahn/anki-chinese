@@ -1,3 +1,6 @@
+import re
+
+
 def numbers_to_accent(syllables, joiner=''):
     return joiner.join(map(decode_pinyin, syllables))
 
