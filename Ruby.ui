@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>571</width>
-    <height>501</height>
+    <width>553</width>
+    <height>559</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -54,13 +54,13 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QComboBox" name="comboBox"/>
+       <widget class="QComboBox" name="deck_combobox"/>
       </item>
       <item row="3" column="1">
-       <widget class="QComboBox" name="comboBox_2"/>
+       <widget class="QComboBox" name="note_combobox"/>
       </item>
       <item row="5" column="1">
-       <widget class="QComboBox" name="comboBox_3"/>
+       <widget class="QComboBox" name="field_combobox"/>
       </item>
      </layout>
     </widget>
@@ -88,6 +88,9 @@
           <property name="text">
            <string>Already exists</string>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">pinyin_option</string>
+          </attribute>
          </widget>
         </item>
         <item>
@@ -95,6 +98,9 @@
           <property name="text">
            <string>Generate</string>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">pinyin_option</string>
+          </attribute>
          </widget>
         </item>
        </layout>
@@ -105,7 +111,7 @@
          <bool>true</bool>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -122,7 +128,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QComboBox" name="comboBox_4">
+           <widget class="QComboBox" name="pinyin_combobox">
             <property name="sizeAdjustPolicy">
              <enum>QComboBox::AdjustToContents</enum>
             </property>
@@ -145,7 +151,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QLineEdit" name="lineEdit_2"/>
+           <widget class="QLineEdit" name="pinyin_lineedit"/>
           </item>
          </layout>
         </widget>
@@ -184,15 +190,15 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="3">
+       <widget class="QListWidget" name="listWidget_2"/>
+      </item>
       <item row="0" column="3">
        <widget class="QLabel" name="label_5">
         <property name="text">
          <string>Expected output</string>
         </property>
        </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QListWidget" name="listWidget_2"/>
       </item>
      </layout>
     </widget>
@@ -244,4 +250,7 @@
    </hints>
   </connection>
  </connections>
+ <buttongroups>
+  <buttongroup name="pinyin_option"/>
+ </buttongroups>
 </ui>

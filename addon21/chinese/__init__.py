@@ -1,7 +1,12 @@
 import os
 import codecs
 
-import jieba
+try:
+    import jieba
+except ImportError:
+    jieba_import = False
+else:
+    jieba_import = True
 
 try:
     # import the main window object (mw) from aqt
@@ -18,11 +23,12 @@ from .gui import *
 
 module_path = os.path.join(os.path.dirname(__file__), '..', 'user_files')
 
-jieba_path = os.path.join(module_path, 'jieba_extra.u8')
 cedict_path = os.path.join(module_path, 'cedict_ts.u8')
-
-jieba.load_userdict(jieba_path)
 cedict = ChineseDict(codecs.open(cedict_path, 'r', 'utf-8'))
+
+if jieba_import:
+    jieba_path = os.path.join(module_path, 'jieba_extra.u8')
+    jieba.load_userdict(jieba_path)
 
 if mw:
     action = QAction("Pinyin helper", mw)
