@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>553</width>
-    <height>559</height>
+    <width>520</width>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -68,7 +68,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
-      <string>GroupBox</string>
+      <string>Pinyin</string>
      </property>
      <layout class="QFormLayout" name="formLayout">
       <property name="fieldGrowthPolicy">
@@ -77,7 +77,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Pinyin</string>
+         <string>Setting</string>
         </property>
        </widget>
       </item>
@@ -106,12 +106,12 @@
        </layout>
       </item>
       <item row="2" column="1">
-       <widget class="QStackedWidget" name="stackedWidget">
+       <widget class="QStackedWidget" name="pinyin_stacked">
         <property name="enabled">
          <bool>true</bool>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -160,7 +160,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_8">
         <property name="text">
-         <string>Pinyin field</string>
+         <string>Field</string>
         </property>
        </widget>
       </item>
