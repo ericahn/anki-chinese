@@ -17,6 +17,7 @@ try:
     from aqt.qt import *
 except ImportError:
     print('Failed to import Anki modules')
+
 from .chinese_dict import ChineseDict
 from .html import generate_ruby, generate_definitions_table
 from .gui import *
@@ -31,6 +32,16 @@ if jieba_import:
     jieba.load_userdict(jieba_path)
 
 if mw:
+    chinese_menu = None
+    for action in mw.form.menuTools.actions():
+        menu = action.menu()
+        if menu is not None and action.text() == 'Chinese tools':
+            chinese_menu = menu
+    if chinese_menu is None:
+        chinese_menu = QMenu('Chinese tools')
+        mw.form.menuTools.addSeparator()
+        mw.form.menuTools.addMenu(chinese_menu)
+
     action = QAction("Pinyin helper", mw)
     action.triggered.connect(MainMenu)
-    mw.form.menuTools.addAction(action)
+    chinese_menu.addAction(action)
