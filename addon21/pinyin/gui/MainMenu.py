@@ -4,7 +4,7 @@ from .forms import ruby
 
 
 class MainMenu(QDialog):
-    def __init__(self):
+    def __init__(self, env):
         QDialog.__init__(self, mw, Qt.Window)
         mw.setupDialogGC(self)
         self.form = ruby.Ui_Dialog()
@@ -13,6 +13,7 @@ class MainMenu(QDialog):
         self.mw = mw
         self.parent = mw
         self.col = self.mw.col
+        self.env = env
 
         self.show()
         self.setFocus()

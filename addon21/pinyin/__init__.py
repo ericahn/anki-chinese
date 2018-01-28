@@ -32,6 +32,8 @@ if jieba_import:
     jieba_path = os.path.join(module_path, 'jieba_extra.u8')
     jieba.load_userdict(jieba_path)
 
+env = None
+
 if mw:
     chinese_menu = None
     for action in mw.form.menuTools.actions():
@@ -44,5 +46,5 @@ if mw:
         mw.form.menuTools.addMenu(chinese_menu)
 
     action = QAction("Pinyin helper", mw)
-    action.triggered.connect(MainMenu)
+    action.triggered.connect(lambda: MainMenu(env))
     chinese_menu.addAction(action)
