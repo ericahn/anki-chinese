@@ -3,6 +3,7 @@ import codecs
 
 try:
     import jieba
+    jieba.setLogLevel(60)
 except ImportError:
     jieba_import = False
 else:
