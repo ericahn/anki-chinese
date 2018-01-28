@@ -1,1 +1,1 @@
-from .chinese import *
+from .pinyin import *
