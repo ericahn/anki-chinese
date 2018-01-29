@@ -91,20 +91,21 @@ def parse_sentence(cedict, sentence):
 def match_hp(hanzi_raw, pinyin_raw, debug=False):
     hanzis = re.findall('[{}]'.format(zhon.hanzi.characters), hanzi_raw)
     pinyins = re.findall(zhon.pinyin.syllable, pinyin_raw, re.I)
-    if debug: print(hanzis)
-    if debug: print(pinyins)
+    if debug:
+        print(hanzis)
+        print(pinyins)
     if len(hanzis) != len(pinyins):
         return False, None
     output = []
-    in_match = True
     while hanzis and pinyins:
         hanzi = hanzis[0]
         pinyin = pinyins[0]
         hanzi_match = hanzis[0] == hanzi_raw[0]
         pinyin_match = pinyins[0] == pinyin_raw[:len(pinyin)]
-        if debug: print('So far: {}'.format(output))
-        if debug: print('  Hanzi : [{}] [{}] {}'.format(hanzi, hanzi_raw[0], hanzi_match))
-        if debug: print('  Pinyin: [{}] [{}] {}'.format(pinyin, pinyin_raw[:len(pinyin)], pinyin_match))
+        if debug:
+            print('So far: {}'.format(output))
+            print('  Hanzi : [{}] [{}] {}'.format(hanzi, hanzi_raw[0], hanzi_match))
+            print('  Pinyin: [{}] [{}] {}'.format(pinyin, pinyin_raw[:len(pinyin)], pinyin_match))
         if hanzi_match and pinyin_match:
             if len(output) == 0 or not output[-1][0]:
                 output.append([True, [], []])
@@ -124,7 +125,6 @@ def match_hp(hanzi_raw, pinyin_raw, debug=False):
                 output.append([False, [], []])
             output[-1][2].append(pinyin_raw[0])
             pinyin_raw = pinyin_raw[1:]
-        if debug: print('')
     if hanzis or pinyins:
         return False, output
     if output[-1][0]:
