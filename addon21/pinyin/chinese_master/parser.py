@@ -1,71 +1,29 @@
 import re
 
 try:
-    import jieba
-    jieba.setLogLevel(60)
+    import pinyinhelper.jieba as jieba
 except ImportError:
-    jieba_import = False
-    print('Could not find jieba!')
+    try:
+        import jieba
+    except ImportError:
+        jieba_import = False
+        print('Could not find jieba!')
+    else:
+        jieba_import = True
 else:
     jieba_import = True
+if jieba_import:
     jieba.setLogLevel(60)
 
-import zhon
+try:
+    import zhon.hanzi as zhonhanzi
+    import zhon.pinyin as zhonpinyin
+except ImportError:
+    import pinyinhelper.zhon.hanzi as zhonhanzi
+    import pinyinhelper.zhon.pinyin as zhonpinyin
 
 
-def is_hanzi(c):
-    return len(c) == 1 and 0x4e00 <= ord(c) <= 0x9fff
-
-
-def numbers_to_accent(syllables, joiner=''):
-    return joiner.join(map(decode_pinyin, syllables))
-
-
-PinyinToneMark = {
-    0: "aoeiuv\u00fc",
-    1: "\u0101\u014d\u0113\u012b\u016b\u01d6\u01d6",
-    2: "\u00e1\u00f3\u00e9\u00ed\u00fa\u01d8\u01d8",
-    3: "\u01ce\u01d2\u011b\u01d0\u01d4\u01da\u01da",
-    4: "\u00e0\u00f2\u00e8\u00ec\u00f9\u01dc\u01dc",
-}
-
-
-def decode_pinyin(s):
-    s = s.lower()
-    r = ""
-    t = ""
-    for c in s:
-        if 'a' <= c <= 'z':
-            t += c
-        elif c == ':':
-            assert t[-1] == 'u'
-            t = t[:-1] + "\u00fc"
-        else:
-            if '0' <= c <= '5':
-                tone = int(c) % 5
-                if tone != 0:
-                    m = re.search("[aoeiuv\u00fc]+", t)
-                    if m is None:
-                        t += c
-                    elif len(m.group(0)) == 1:
-                        t = t[:m.start(0)] + PinyinToneMark[tone][PinyinToneMark[0].index(m.group(0))] + t[m.end(0):]
-                    else:
-                        if 'a' in t:
-                            t = t.replace("a", PinyinToneMark[tone][0])
-                        elif 'o' in t:
-                            t = t.replace("o", PinyinToneMark[tone][1])
-                        elif 'e' in t:
-                            t = t.replace("e", PinyinToneMark[tone][2])
-                        elif t.endswith("ui"):
-                            t = t.replace("i", PinyinToneMark[tone][3])
-                        elif t.endswith("iu"):
-                            t = t.replace("u", PinyinToneMark[tone][4])
-                        else:
-                            t += "!"
-            r += t
-            t = ""
-    r += t
-    return r
+from .atoms import numbers_to_accent, pinyin_mton, is_hanzi
 
 
 def parse_sentence(cedict, sentence):
@@ -74,11 +32,10 @@ def parse_sentence(cedict, sentence):
         if is_hanzi(text[0]):
             success, pinyins = cedict.lookup(text)
             if success:
-                pinyin = numbers_to_accent(pinyins[0][0], ' ')
-                ruby_struct.append((True, text, pinyin))
+                ruby_struct.append((True, text, pinyins[0][0]))
             else:
                 for word in cedict.gen_words(text):
-                    pinyin = numbers_to_accent(cedict.lookup(word)[1][0][0], ' ')
+                    pinyin = cedict.lookup(word)[1][0][0]
                     ruby_struct.append((True, word, pinyin))
         elif text[0] == '?' and len(ruby_struct) > 0 and ruby_struct[-1][1] == '吗':
             ruby_struct[-1] = (True, '吗', ('ma5',))
@@ -89,8 +46,10 @@ def parse_sentence(cedict, sentence):
 
 
 def match_hp(hanzi_raw, pinyin_raw, debug=False):
-    hanzis = re.findall('[{}]'.format(zhon.hanzi.characters), hanzi_raw)
-    pinyins = re.findall(zhon.pinyin.syllable, pinyin_raw, re.I)
+    hanzis = re.findall('[{}]'.format(zhonhanzi.characters), hanzi_raw)
+    pinyins = re.findall(zhonpinyin.syllable, pinyin_raw, re.I)
+    if len(hanzis) == 0 or len(pinyins) == 0:
+        return False, None
     if debug:
         print(hanzis)
         print(pinyins)
@@ -110,7 +69,7 @@ def match_hp(hanzi_raw, pinyin_raw, debug=False):
             if len(output) == 0 or not output[-1][0]:
                 output.append([True, [], []])
             output[-1][1].append(hanzi)
-            output[-1][2].append(pinyin)
+            output[-1][2].append(pinyin_mton(pinyin))
             hanzis = hanzis[1:]
             hanzi_raw = hanzi_raw[1:]
             pinyins = pinyins[1:]
@@ -138,7 +97,7 @@ def clean_match(match):
     result = []
     for flag, a, b in match:
         if flag:
-            result.append((True, ''.join(a), ' '.join(b)))
+            result.append((True, ''.join(a), tuple(b)))
         else:
             if not a:
                 text = ''.join(b)
