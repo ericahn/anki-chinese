@@ -40,7 +40,7 @@ class ChineseMaster:
             nids.add(note.id)
             success, match = match_hp(note[hanzi_field], note[pinyin_field])
             if success:
-                match_stage.append([note, match])
+                match_stage.append([note, clean_match(match)])
         stage = {match_key: match_stage}
         self.staged[stage_key] = stage
         return stage
@@ -62,10 +62,10 @@ class ChineseMaster:
                 continue
             success, match = match_hp(note[hanzi_field], note[pinyin_field])
             if success:
-                match_stage.append(match)
+                match_stage.append([note, clean_match(match)])
             else:
-                match = parse_sentence(self.cedict, note[hanzi_field])
-                gen_stage.append(match)
+                ruby = parse_sentence(self.cedict, note[hanzi_field])
+                gen_stage.append([note, ruby])
 
         stage = {match_key: match_stage, gen_key: gen_stage}
         self.staged[stage_key] = stage
@@ -84,9 +84,34 @@ class ChineseMaster:
             if note.id in nids:
                 continue
 
-            match = parse_sentence(self.cedict, note[hanzi_field])
-            gen_stage.append(match)
+            ruby = parse_sentence(self.cedict, note[hanzi_field])
+            gen_stage.append([note, ruby])
 
         stage = {gen_key: gen_stage}
         self.staged[stage_key] = stage
         return stage
+
+    def execute_staged(self, deck, note, hanzi_field):
+        stage_key = (deck, note, hanzi_field)
+        if stage_key not in self.staged:
+            print('The stage key {} is not in staging area!')
+            return
+        for (job, fields), todo in self.staged[stage_key].items():
+            if job == 'generate':
+                ruby_field, pinyin_gen_field = fields
+                self.execute_generate(todo, ruby_field, pinyin_gen_field)
+            elif job == 'match':
+                self.execute_match(todo, fields[0])
+            else:
+                print('Unknown job type [{}] was staged! It has fields {}'.format(job, fields))
+                continue
+
+    def execute_generate(self, todo, ruby_field, pinyin_gen_field):
+        for note, ruby_struct in todo:
+            note[ruby_field] = generate_ruby(ruby_struct)
+            note.flush()
+
+    def execute_match(self, todo, stage_key, ruby_field):
+        for note, ruby_struct in todo:
+            note[ruby_field] = generate_ruby(ruby_struct)
+            note.flush()
