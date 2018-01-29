@@ -28,5 +28,5 @@ if mw:
         mw.form.menuTools.addMenu(chinese_menu)
 
     action = QAction("Pinyin helper", mw)
-    action.triggered.connect(lambda: MainMenu(ChineseMaster(mw, module_path)))
+    action.triggered.connect(lambda: MainMenu(ChineseMaster(mw.col, module_path)))
     chinese_menu.addAction(action)
