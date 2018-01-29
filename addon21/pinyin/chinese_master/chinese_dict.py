@@ -42,14 +42,14 @@ class ChineseDict:
             return False, None
         entry = self.entries[chinese]
         if pinyin and pinyin in entry:
-            return True, {pinyin: entry[pinyin]}
+            return True, [[pinyin, entry[pinyin]]]
         else:
             return True, sort_entry(entry)
 
     def gen_words(self, text):
         i = 0
         while i < len(text):
-            for j in range(i+self.max_word_length,i,-1):
+            for j in range(i + self.max_word_length, i, -1):
                 s = text[i:j]
                 if s in self.entries:
                     yield s
