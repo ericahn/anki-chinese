@@ -1,11 +1,19 @@
 import os
 import codecs
 
-import jieba
+try:
+    import jieba
+    jieba.setLogLevel(60)
+except ImportError:
+    jieba_import = False
+    print('Could not find jieba!')
+else:
+    jieba_import = True
+    jieba.setLogLevel(60)
+
 
 from .chinese_dict import ChineseDict
 
-jieba.setLogLevel(60)
 
 
 class ChineseMaster:
@@ -16,3 +24,5 @@ class ChineseMaster:
 
         jieba.load_userdict(jieba_path)
         self.cedict = ChineseDict(codecs.open(cedict_path, 'r', 'utf-8'))
+
+    def stage_match(self, deck, note, sentence_field, pinyin_field, ruby_field):
