@@ -2,13 +2,18 @@ import os
 import codecs
 
 try:
-    import jieba
-    jieba.setLogLevel(60)
+    import pinyinhelper.jieba as jieba
 except ImportError:
-    jieba_import = False
-    print('Could not find jieba!')
+    try:
+        import jieba
+    except ImportError:
+        jieba_import = False
+        print('Could not find jieba!')
+    else:
+        jieba_import = True
 else:
     jieba_import = True
+if jieba_import:
     jieba.setLogLevel(60)
 
 
@@ -27,12 +32,11 @@ class ChineseMaster:
             jieba.load_userdict(jieba_path)
         self.staged = {}
 
-    def stage_match_strict(self, deck, note, hanzi_field, pinyin_field, ruby_field):
+    def stage_match_strict(self, deck, note, hanzi_field, pinyin_field):
         nids = set()
         stage_key = (deck, note, hanzi_field)
         match_stage = []
         match_key = ("match", (ruby_field,))
-        stage_key = ((deck, note, hanzi_field), "match", (ruby_field,))
         for cid in self.col.findCards('deck:"{}" note:"{}"'.format(deck, note)):
             note = self.col.getCard(cid).note()
             if note.id in nids or len(note[pinyin_field]) <= 1:
@@ -40,21 +44,24 @@ class ChineseMaster:
             nids.add(note.id)
             success, match = match_hp(note[hanzi_field], note[pinyin_field])
             if success:
-                match_stage.append([note, clean_match(match)])
+                ruby_struct = clean_match(match)
+                ruby = generate_ruby(ruby_struct)
+                table = generate_definitions_table(self.cedict, ruby_struct)
+                match_stage.append([note, ruby, table])
         stage = {match_key: match_stage}
         self.staged[stage_key] = stage
         return stage
 
-    def stage_match_fallback(self, deck, note, hanzi_field, pinyin_field, pinyin_gen_field, ruby_field):
+    def stage_match_fallback(self, deck, note, hanzi_field, pinyin_field):
         nids = set()
 
         stage_key = (deck, note, hanzi_field)
 
         match_stage = []
-        match_key = ("match", (ruby_field,))
+        match_key = "match"
 
         gen_stage = []
-        gen_key = ("generate", (ruby_field, pinyin_gen_field))
+        gen_key = "generate"
 
         for cid in self.col.findCards('deck:"{}" note:"{}"'.format(deck, note)):
             note = self.col.getCard(cid).note()
@@ -62,56 +69,62 @@ class ChineseMaster:
                 continue
             success, match = match_hp(note[hanzi_field], note[pinyin_field])
             if success:
-                match_stage.append([note, clean_match(match)])
+                ruby_struct = clean_match(match)
+                stage = match_stage
             else:
-                ruby = parse_sentence(self.cedict, note[hanzi_field])
-                gen_stage.append([note, ruby])
+                ruby_struct = parse_sentence(self.cedict, note[hanzi_field])
+                stage = gen_stage
+            ruby = generate_ruby(ruby_struct)
+            table = generate_definitions_table(self.cedict, ruby_struct)
+            stage.append([note, ruby, table])
 
         stage = {match_key: match_stage, gen_key: gen_stage}
         self.staged[stage_key] = stage
         return stage
 
-    def stage_generate(self, deck, note, hanzi_field, pinyin_gen_field, ruby_field):
+    def stage_generate(self, deck, note, hanzi_field):
         nids = set()
 
         stage_key = (deck, note, hanzi_field)
 
         gen_stage = []
-        gen_key = ("generate", (ruby_field, pinyin_gen_field))
+        gen_key = "generate"
 
         for cid in self.col.findCards('deck:"{}" note:"{}"'.format(deck, note)):
             note = self.col.getCard(cid).note()
             if note.id in nids:
                 continue
 
-            ruby = parse_sentence(self.cedict, note[hanzi_field])
-            gen_stage.append([note, ruby])
+            ruby_struct = parse_sentence(self.cedict, note[hanzi_field])
+            ruby = generate_ruby(ruby_struct)
+            table = generate_definitions_table(self.cedict, ruby_struct)
+            gen_stage.append([note, ruby, table])
 
         stage = {gen_key: gen_stage}
         self.staged[stage_key] = stage
         return stage
 
-    def execute_staged(self, deck, note, hanzi_field):
-        stage_key = (deck, note, hanzi_field)
-        if stage_key not in self.staged:
-            print('The stage key {} is not in staging area!')
+    def execute_generate(self, key, ruby_field, pinyin_gen_field, cedict_field=None):
+        if key not in self.staged:
             return
-        for (job, fields), todo in self.staged[stage_key].items():
-            if job == 'generate':
-                ruby_field, pinyin_gen_field = fields
-                self.execute_generate(todo, ruby_field, pinyin_gen_field)
-            elif job == 'match':
-                self.execute_match(todo, fields[0])
-            else:
-                print('Unknown job type [{}] was staged! It has fields {}'.format(job, fields))
-                continue
-
-    def execute_generate(self, todo, ruby_field, pinyin_gen_field):
-        for note, ruby_struct in todo:
-            note[ruby_field] = generate_ruby(ruby_struct)
+        for note, ruby, table in self.staged[key]['generate']:
+            note[ruby_field] = ruby
+            if cedict_field is not None:
+                note[cedict_field] = table
             note.flush()
 
-    def execute_match(self, todo, stage_key, ruby_field):
-        for note, ruby_struct in todo:
-            note[ruby_field] = generate_ruby(ruby_struct)
-            note.flush()
+    def execute_match(self, key, ruby_field, cedict_field=None):
+        if key not in self.staged:
+            return
+        if 'match' in self.staged[key]:
+            for note, ruby, table in self.staged[key]['match']:
+                note[ruby_field] = ruby
+                if cedict_field is not None:
+                    note[cedict_field] = table
+                note.flush()
+        if 'generate' in self.staged[key]:
+            for note, ruby, table in self.staged[key]['generate']:
+                note[ruby_field] = ruby
+                if cedict_field is not None:
+                    note[cedict_field] = table
+                note.flush()
