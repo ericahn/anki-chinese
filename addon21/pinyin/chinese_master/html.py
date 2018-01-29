@@ -91,6 +91,7 @@ PinyinToneMark = {
     4: "\u00e0\u00f2\u00e8\u00ec\u00f9\u01dc\u01dc",
 }
 
+
 def decode_pinyin(s):
     s = s.lower()
     r = ""
