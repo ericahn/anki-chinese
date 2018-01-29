@@ -1,5 +1,4 @@
 import os
-import codecs
 
 try:
     # import the main window object (mw) from aqt
