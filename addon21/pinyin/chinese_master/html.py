@@ -40,7 +40,6 @@ def generate_definitions_table(cedict, ruby_struct):
                 ol += ''.join('        <li>{}</li>\n'.format(element) for element in elements)
                 ol += '      </ol>'
                 word = text if first_word else ''
-                pinyin = numbers_to_accent(pinyins)
                 row_class = ''
                 if not first and first_word:
                     row_class += 'dict-table-word-border'
@@ -64,7 +63,6 @@ def generate_definitions_table(cedict, ruby_struct):
                         ol += ''.join('        <li>{}</li>\n'.format(element) for element in elements)
                         ol += '      </ol>'
                         word = word if first_word else ''
-                        pinyin = numbers_to_accent(pinyin)
                         row_class = []
                         if not first:
                             if first_word:
