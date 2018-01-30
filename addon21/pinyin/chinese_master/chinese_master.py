@@ -36,7 +36,7 @@ class ChineseMaster:
         nids = set()
         stage_key = (deck, note, hanzi_field)
         match_stage = []
-        match_key = ("match", (ruby_field,))
+        match_key = "match"
         for cid in self.col.findCards('deck:"{}" note:"{}"'.format(deck, note)):
             note = self.col.getCard(cid).note()
             if note.id in nids or len(note[pinyin_field]) <= 1:
