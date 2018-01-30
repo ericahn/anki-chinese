@@ -18,11 +18,6 @@ class MainMenu(QDialog):
         self.parent = mw
         self.col = self.mw.col
         self.chinese_master = cm
-
-        # Show main menu
-        self.show()
-        self.setFocus()
-
         # Initialize objects
         decks = self.col.decks.all()
         deck_pairs = [(deck['id'], deck['name']) for deck in decks]
@@ -53,8 +48,6 @@ class MainMenu(QDialog):
         self.form.button_match.clicked.connect(self.execute_match)
         self.form.button_generate.clicked.connect(self.execute_generate)
 
-        self.form.deck_combobox.addItems(self.deck_names)
-
         # Pinyin selection
         self.form.pinyin_option.buttonClicked.connect(self.pinyin_option_selected)
         self.form.pinyin_match_combobox.hide()
@@ -73,6 +66,12 @@ class MainMenu(QDialog):
         self.form.preview_generate = RubyPreview()
         self.form.preview_match_layout.addWidget(self.form.preview_match, 5)
         self.form.preview_generate_layout.addWidget(self.form.preview_generate, 5)
+
+        # Show main menu
+        self.show()
+        self.setFocus()
+        self.adjustSize()
+        self.form.deck_combobox.addItems(self.deck_names)
 
     def deck_selected(self, deck_index):
         did = self.deck_ids[deck_index]
