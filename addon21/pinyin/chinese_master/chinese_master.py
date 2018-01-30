@@ -2,20 +2,14 @@ import os
 import codecs
 
 try:
-    import pinyinhelper.jieba as jieba
+    from ... import jieba
 except ImportError:
-    try:
-        import jieba
-    except ImportError:
-        jieba_import = False
-        print('Could not find jieba!')
-    else:
-        jieba_import = True
+    jieba_import = False
+    print('Could not find jieba!')
 else:
     jieba_import = True
 if jieba_import:
     jieba.setLogLevel(60)
-
 
 from .chinese_dict import ChineseDict
 from .parser import *

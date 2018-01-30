@@ -1,26 +1,17 @@
 import re
 
 try:
-    import pinyinhelper.jieba as jieba
+    from ... import jieba
 except ImportError:
-    try:
-        import jieba
-    except ImportError:
-        jieba_import = False
-        print('Could not find jieba!')
-    else:
-        jieba_import = True
+    jieba_import = False
+    print('Could not find jieba!')
 else:
     jieba_import = True
 if jieba_import:
     jieba.setLogLevel(60)
 
-try:
-    import zhon.hanzi as zhonhanzi
-    import zhon.pinyin as zhonpinyin
-except ImportError:
-    import pinyinhelper.zhon.hanzi as zhonhanzi
-    import pinyinhelper.zhon.pinyin as zhonpinyin
+from ...zhon import hanzi as zhonhanzi
+from ...zhon import pinyin as zhonpinyin
 
 
 from .atoms import numbers_to_accent, pinyin_mton, is_hanzi
