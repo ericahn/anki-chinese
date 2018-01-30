@@ -153,13 +153,13 @@ class MainMenu(QDialog):
         self.update_render()
 
     def ruby_selected(self, ruby_index):
-        self.update_actions()
+        pass
 
     def pinyin_match_selected(self, pinyin_match_index):
         self.update_actions()
 
     def pinyin_generate_selected(self, pinyin_generate_index):
-        self.update_actions()
+        pass
 
     def update_actions(self):
         self.form.list_match.clear()
