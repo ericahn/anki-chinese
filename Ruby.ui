@@ -7,8 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>491</width>
-    <height>1082</height>
+    <height>832</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
@@ -16,6 +22,12 @@
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QGroupBox" name="hanzi_groupbox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="mouseTracking">
       <bool>false</bool>
      </property>
@@ -41,8 +53,14 @@
       </item>
       <item row="0" column="1">
        <widget class="QComboBox" name="deck_combobox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="styleSheet">
-         <string notr="true">combobox-popup: 0;</string>
+         <string notr="true"/>
         </property>
        </widget>
       </item>
@@ -54,7 +72,14 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QComboBox" name="note_combobox"/>
+       <widget class="QComboBox" name="note_combobox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
@@ -64,13 +89,26 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QComboBox" name="field_combobox"/>
+       <widget class="QComboBox" name="field_combobox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="pinyin_groupbox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title">
       <string>Pinyin</string>
      </property>
@@ -130,10 +168,24 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QComboBox" name="pinyin_match_combobox"/>
+       <widget class="QComboBox" name="pinyin_match_combobox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QComboBox" name="pinyin_generate_combobox"/>
+       <widget class="QComboBox" name="pinyin_generate_combobox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
       <item row="3" column="0">
        <widget class="QLabel" name="pinyin_generate_label">
@@ -150,13 +202,26 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QComboBox" name="ruby_combobox"/>
+       <widget class="QComboBox" name="ruby_combobox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="cedict_groupbox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title">
       <string>CEDICT dictionary entries</string>
      </property>
@@ -183,13 +248,26 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QComboBox" name="cedict_combobox"/>
+       <widget class="QComboBox" name="cedict_combobox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="widget_match">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title">
       <string>Existing pinyin</string>
      </property>
@@ -217,6 +295,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="button_match">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Add ruby</string>
         </property>
@@ -227,6 +311,12 @@
    </item>
    <item>
     <widget class="QGroupBox" name="widget_generate">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title">
       <string>Pinyin to generate</string>
      </property>
@@ -254,6 +344,15 @@
       </item>
       <item>
        <widget class="QPushButton" name="button_generate">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
         <property name="text">
          <string>Add ruby</string>
         </property>
