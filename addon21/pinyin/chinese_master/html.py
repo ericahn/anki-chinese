@@ -11,7 +11,7 @@ def generate_ruby(ruby_struct):
     for is_ruby, main, pinyins in ruby_struct:
         if is_ruby:
             to_add  = ' ' if prev else ''
-            accented = numbers_to_accent(pinyins, ' ')
+            accented = numbers_to_accent(pinyins)
             to_add += '<ruby>{}<rt>{}</ruby>'.format(main, accented)
         else:
             if main == ' ' or main == '  ':
@@ -29,7 +29,7 @@ def generate_definitions_table(cedict, ruby_struct):
 
     col_classes = 'dict-table-word', 'dict-table-pinyin', 'dict-table-definition'
     row_temp  = '  <tr class="{}">\n'
-    row_temp += '\n'.join('    <td class={}>{{}}</td>'.format(row_class) for row_class in col_classes) + '\n'
+    row_temp += '\n'.join('    <td class="{}">{{}}</td>'.format(row_class) for row_class in col_classes) + '\n'
     row_temp += '  </tr>\n'
 
     first = True
