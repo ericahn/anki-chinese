@@ -1,17 +1,33 @@
 import re
 
 try:
-    from ... import jieba
+    import jieba
 except ImportError:
-    jieba_import = False
-    print('Could not find jieba!')
+    try:
+        from ... import jieba
+    except ImportError:
+        jieba_import = False
+        print('Could not find local jieba')
+    except ValueError as err:
+        err_msg = err.args[0]
+        if 'relative' in err_msg and 'import' in err_msg:
+            print('Could not find local jieba with relative import')
+            jieba_import = False
+        else:
+            raise
+    else:
+        jieba_import = True
 else:
     jieba_import = True
 if jieba_import:
     jieba.setLogLevel(60)
 
-from ...zhon import hanzi as zhonhanzi
-from ...zhon import pinyin as zhonpinyin
+try:
+    import zhon.hanzi as zhonhanzi
+    import zhon.pinyin as zhonpinyin
+except ImportError:
+    from ...zhon import hanzi as zhonhanzi
+    from ...zhon import pinyin as zhonpinyin
 
 
 from .atoms import numbers_to_accent, pinyin_mton, is_hanzi
@@ -60,7 +76,7 @@ def match_hp(hanzi_raw, pinyin_raw, debug=False):
             if len(output) == 0 or not output[-1][0]:
                 output.append([True, [], []])
             output[-1][1].append(hanzi)
-            output[-1][2].append(pinyin_mton(pinyin))
+            output[-1][2].append(pinyin_mton(pinyin).lower())
             hanzis = hanzis[1:]
             hanzi_raw = hanzi_raw[1:]
             pinyins = pinyins[1:]
